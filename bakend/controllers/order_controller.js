@@ -10,6 +10,14 @@ exports.createOrder=async(req,res,next)=>{
 
     // console.log(amount,'AMOUNT')
     const order=await orderModel.create ({cartItems,amount,status})
+    
+    // Updating product stock
+    cartItems.forEach(async () => {
+        const product =await productModel.findBuId(item.product._id)
+        product.stock =product.stock - item.qty;
+        await product.save();
+    });
+    
     res.json(
         {
             success:true,
